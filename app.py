@@ -13,6 +13,13 @@ load_dotenv()
 
 PPLX_API_KEY = os.getenv("PPLX_API_KEY")
 
+if "query_text" not in st.session_state:
+    st.session_state.query_text = ""
+
+if "last_selected_model" not in st.session_state:
+    st.session_state.last_selected_model = "— Select —"
+
+
 # -------------------------------------------------
 # Page Configuration
 # -------------------------------------------------
@@ -51,6 +58,11 @@ selected_model = st.sidebar.selectbox(
     ["— Select —"] + model_files
 )
 
+if selected_model != st.session_state.last_selected_model:
+    st.session_state.query_text = ""   # clear question input
+    st.session_state.last_selected_model = selected_model
+
+
 st.sidebar.markdown("---")
 st.sidebar.caption(
     "Models are stored temporarily.\n"
@@ -74,11 +86,23 @@ if uploaded_file:
         if st.button("⚙️ Create Model", use_container_width=True):
             with st.spinner("Extracting text and building model..."):
                 text = extract_text(uploaded_file)
+
+                # 🚨 Detect image-based PDF
+                if not text or len(text.strip()) < 50:
+                    st.warning(
+                        "⚠️ This document appears to be an image-based PDF.\n\n"
+                        "Please upload a **text-based PDF, DOCX, or TXT file**.\n\n"
+                        "Scanned documents are not supported yet."
+                    )
+                    st.stop()
+
                 model_name = uploaded_file.name.replace(".", "_")
                 build_model(text, model_name)
+
             st.success("✅ Model created successfully!")
             time.sleep(0.5)
             st.rerun()
+
 
     with col2:
         st.info(
@@ -101,8 +125,10 @@ if selected_model != "— Select —":
 
     query = st.text_input(
         "Enter your question",
-        placeholder="e.g. What is the main topic discussed in this document?"
-    )
+    placeholder="e.g. What is the main topic discussed in this document?",
+    key="query_text"
+)
+
 
     if query:
         with st.spinner("Searching relevant context..."):
