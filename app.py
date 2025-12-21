@@ -77,6 +77,8 @@ if uploaded_file:
                 model_name = uploaded_file.name.replace(".", "_")
                 build_model(text, model_name)
             st.success("✅ Model created successfully!")
+            time.sleep(0.5)
+            st.rerun()
 
     with col2:
         st.info(
