@@ -4,21 +4,54 @@ import docx
 def extract_text(file):
     filename = file.name.lower()
 
-    # PDF
+    # PDF (images are ignored by default)
     if filename.endswith(".pdf"):
         reader = PdfReader(file)
-        return " ".join(
-            [page.extract_text() for page in reader.pages if page.extract_text()]
-        )
+        text = []
+        for page in reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text.append(page_text)
+        return " ".join(text)
 
-    # DOCX
+    # DOCX (only paragraph text, no images)
     elif filename.endswith(".docx"):
         doc = docx.Document(file)
-        return " ".join([p.text for p in doc.paragraphs])
+        return " ".join(
+            p.text for p in doc.paragraphs if p.text.strip()
+        )
 
-    # TXT or any text file
+    # TXT or any text-based files
     else:
-        return file.read().decode("utf-8")
+        return file.read().decode("utf-8", errors="ignore")
+
+#######################################################################################3
+
+# from PyPDF2 import PdfReader
+# import docx
+
+# def extract_text(file):
+#     filename = file.name.lower()
+
+#     # PDF
+#     if filename.endswith(".pdf"):
+#         reader = PdfReader(file)
+#         return " ".join(
+#             [page.extract_text() for page in reader.pages if page.extract_text()]
+#         )
+
+#     # DOCX
+#     elif filename.endswith(".docx"):
+#         doc = docx.Document(file)
+#         return " ".join([p.text for p in doc.paragraphs])
+
+#     # TXT or any text file
+#     else:
+#         return file.read().decode("utf-8")
+    
+
+
+
 
 # ##Scanned pdf feature
 # from PyPDF2 import PdfReader
