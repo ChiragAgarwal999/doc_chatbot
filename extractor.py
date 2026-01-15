@@ -4,26 +4,41 @@ import docx
 def extract_text(file):
     filename = file.name.lower()
 
-    # PDF (images are ignored by default)
     if filename.endswith(".pdf"):
         reader = PdfReader(file)
+
+        # Handle encrypted PDFs
+        if reader.is_encrypted:
+            try:
+                reader.decrypt("")
+            except Exception:
+                return ""
+
         text = []
         for page in reader.pages:
-            page_text = page.extract_text()
-            if page_text:
-                text.append(page_text)
+            try:
+                page_text = page.extract_text()
+                if page_text:
+                    # 🔧 Remove invalid unicode surrogates
+                    page_text = (
+                        page_text.encode("utf-8", "ignore")
+                                 .decode("utf-8", "ignore")
+                    )
+                    text.append(page_text)
+            except Exception:
+                # Skip pages with broken encoding
+                continue
+
         return " ".join(text)
 
-    # DOCX (only paragraph text, no images)
     elif filename.endswith(".docx"):
         doc = docx.Document(file)
-        return " ".join(
-            p.text for p in doc.paragraphs if p.text.strip()
-        )
+        return " ".join(p.text for p in doc.paragraphs if p.text.strip())
 
-    # TXT or any text-based files
     else:
         return file.read().decode("utf-8", errors="ignore")
+
+
 
 #######################################################################################3
 
