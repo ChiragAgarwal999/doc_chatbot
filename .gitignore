@@ -2,3 +2,5 @@
 models/
 __pycache__/
 *.pkl
+perplexityversion.txt
+giminiversion.txt

@@ -36,7 +36,7 @@ st.markdown(
     """
     <h1 style='text-align: center;'>📄 Document Chatbot</h1>
     <p style='text-align: center; color: gray;'>
-        Upload a document, build a temporary model, and ask questions from it .
+        Upload a document, build a temporary model, and ask questions from it.
     </p>
     """,
     unsafe_allow_html=True
