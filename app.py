@@ -8,10 +8,13 @@ from dotenv import load_dotenv
 from extractor import extract_text
 from model_builder import build_model, create_embedding
 from sklearn.metrics.pairwise import cosine_similarity
+from google import genai
+from google.genai import types
 
 load_dotenv()
 
-PPLX_API_KEY = os.getenv("PPLX_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 if "query_text" not in st.session_state:
     st.session_state.query_text = ""
@@ -36,7 +39,7 @@ st.markdown(
     """
     <h1 style='text-align: center;'>📄 Document Chatbot</h1>
     <p style='text-align: center; color: gray;'>
-        Upload a document, build a temporary model, and ask questions from it.
+        Upload a document, build a temporary model, and ask questions from it .
     </p>
     """,
     unsafe_allow_html=True
@@ -150,7 +153,7 @@ if selected_model != "— Select —":
             with st.expander(f"Context {i}"):
                 st.write(chunk)
 
-        # -------- Build prompt for Perplexity --------
+        # -------- Build prompt for Gemini --------
         combined_context = "\n\n".join(
             [f"Context {i+1}:\n{chunk}" for i, chunk in enumerate(context_chunks)]
         )
@@ -183,34 +186,26 @@ Structured Answer:
 """
 
 
+                # -------------------------- 
+        # Gemini API Call (UPDATED)
         # --------------------------
-        # Perplexity API Call
-        # --------------------------
-        url = "https://api.perplexity.ai/chat/completions"
-        headers = {
-        "Authorization": f"Bearer {PPLX_API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-        payload = {
-            "model": "sonar",
-            "messages": [
-                {"role": "user", "content": prompt}
-            ]
-        }
-
         with st.spinner("Generating answer..."):
-            response = requests.post(url, headers=headers, json=payload)
-
-        bot_placeholder = st.empty()
-
-        if response.status_code == 200:
+            bot_placeholder = st.empty()
             try:
-                final_answer = response.json()["choices"][0]["message"]["content"].strip()
-            except Exception:
-                final_answer = "⚠️ Could not parse Perplexity response."
-        else:
-            final_answer = f"⚠️ API Error {response.status_code}: {response.text}"
+                response = client.models.generate_content(
+                    model="models/gemini-flash-latest",  # ✅ correct format
+                    contents=prompt,
+                    config={
+                        "temperature": 0.3,
+                        "max_output_tokens": 1024,
+                    }
+                )
+
+                final_answer = response.text.strip()
+
+            except Exception as e:
+                final_answer = f"⚠️ Gemini API Error: {e}"
+
 
         # --------------------------
         # Typing Effect Simulation
