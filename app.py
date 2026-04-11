@@ -5,6 +5,7 @@ import pickle
 import re
 import hashlib
 import html
+import base64
 import numpy as np
 from io import BytesIO
 from dotenv import load_dotenv
@@ -319,6 +320,311 @@ st.markdown(
         box-shadow: 0 10px 24px rgba(12, 23, 40, 0.2), 0 2px 6px rgba(12, 23, 40, 0.16);
     }
 
+    .about-team-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: #13263d;
+        color: #f4f8ff !important;
+        border: 1px solid #3f5977;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none !important;
+        position: fixed;
+        top: 82px;
+        right: 24px;
+        z-index: 9997;
+        box-shadow: 0 10px 24px rgba(12, 23, 40, 0.2), 0 2px 6px rgba(12, 23, 40, 0.16);
+        transition: transform 0.15s ease, background 0.2s ease;
+    }
+
+    .about-team-btn:hover {
+        background: #1c3655;
+        transform: translateY(-1px);
+    }
+
+    .about-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 20000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(8, 15, 28, 0.56);
+        backdrop-filter: blur(12px) saturate(118%);
+        -webkit-backdrop-filter: blur(12px) saturate(118%);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.28s ease, visibility 0.28s ease;
+    }
+
+    .about-overlay:target {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .about-card {
+        position: relative;
+        width: 100%;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        border-radius: 28px;
+        padding: 20px;
+        max-height: calc(100vh - 56px);
+        overflow: hidden;
+        transform: translateY(18px) scale(0.985);
+        transition: transform 0.3s ease;
+    }
+
+    .about-overlay:target .about-card {
+        transform: translateY(0) scale(1);
+    }
+
+    .about-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        text-decoration: none !important;
+        background: rgba(242, 247, 255, 0.12);
+        border: 1px solid rgba(242, 247, 255, 0.24);
+        color: #f5f8ff !important;
+        font-size: 1.1rem;
+        line-height: 1;
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 20010;
+    }
+
+    .about-layout {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 20px;
+        align-items: stretch;
+        max-height: calc(100vh - 96px);
+    }
+
+    .about-copy {
+        padding: 12px 6px 12px 4px;
+        color: #e8eef8;
+        overflow-y: auto;
+        max-height: calc(100vh - 120px);
+        padding-right: 10px;
+    }
+
+    .about-copy::-webkit-scrollbar,
+    .about-visual::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .about-copy::-webkit-scrollbar-thumb,
+    .about-visual::-webkit-scrollbar-thumb {
+        background: rgba(200, 214, 235, 0.45);
+        border-radius: 999px;
+    }
+
+    .about-copy::-webkit-scrollbar-track,
+    .about-visual::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .about-visual {
+        overflow-y: auto;
+        max-height: calc(100vh - 120px);
+        padding-right: 6px;
+    }
+
+    .about-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #b5c8e6;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .about-copy h2 {
+        margin: 12px 0 8px;
+        color: #ffffff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2rem;
+        line-height: 1.12;
+    }
+
+    .about-copy p {
+        margin: 0 0 14px;
+        color: #d8e2f2;
+        font-size: 0.98rem;
+        line-height: 1.65;
+    }
+
+    .about-pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    .about-pill {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #edf4ff;
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+
+    .about-list {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+    }
+
+    .about-list-item {
+        padding: 12px 14px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .about-list-item strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #ffffff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.95rem;
+    }
+
+    .about-list-item span {
+        color: #c7d5e8;
+        font-size: 0.88rem;
+        line-height: 1.45;
+    }
+
+    .team-members {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 6px;
+    }
+
+    .team-member-card {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .team-member-card:nth-child(1) {
+        border-left: 4px solid #ffb648;
+    }
+
+    .team-member-card:nth-child(2) {
+        border-left: 4px solid #6ad7ff;
+    }
+
+    .team-member-card:nth-child(3) {
+        border-left: 4px solid #8ef0b6;
+    }
+
+    .team-member-card:nth-child(4) {
+        border-left: 4px solid #c9a7ff;
+    }
+
+    .team-member-role {
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 8px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #edf4ff;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .team-member-name {
+        display: block;
+        margin-bottom: 6px;
+        color: #ffffff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.98rem;
+        font-weight: 700;
+    }
+
+    .team-member-desc {
+        color: #c7d5e8;
+        font-size: 0.88rem;
+        line-height: 1.5;
+    }
+
+    .about-image-wrap {
+        border-radius: 22px;
+        overflow: hidden;
+        border: none;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 360px;
+        padding: 18px;
+    }
+
+    .about-image-wrap img {
+        width: 100%;
+        max-width: 100%;
+        max-height: 70vh;
+        object-fit: contain;
+        display: block;
+        filter: drop-shadow(0px -10px 19px orange);
+    }
+
+    .about-image-fallback {
+        color: #d9e6fb;
+        font-size: 0.95rem;
+        text-align: center;
+        padding: 26px 18px;
+    }
+
+    .about-team-name {
+        margin-top: 14px;
+        text-align: center;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        color: #ffb648;
+        text-transform: uppercase;
+        filter: none;
+    }
+
+    .about-team-subtitle {
+        margin-top: 6px;
+        text-align: center;
+        color: #c7d5e8;
+        font-size: 0.88rem;
+        line-height: 1.45;
+    }
+
     .project-logo img,
     .sidebar-title img {
         width: 22px;
@@ -531,7 +837,6 @@ st.markdown(
     [data-testid="stChatInputContainer"] {
         background: #ecf5fd !important;
         border-top: none !important;
-        margin-bottom: 5px
     }
 
     [data-testid="stChatInputContainer"] > div {
@@ -546,22 +851,29 @@ st.markdown(
         background: transparent !important;
     }
 
-    [data-testid="stChatInput"] > div,
-    [data-testid="stChatInput"] form {
-        background: #2f3440 !important;
-        border: 1px solid #4b5568 !important;
-        border-radius: 999px !important;
-        box-shadow: 0 8px 20px rgba(15, 35, 65, 0.18) !important;
-        min-height: 62px !important;
-        max-height: 62px !important;
-        overflow: hidden !important;
-        align-items: center !important;
-    }
+[data-testid="stChatInput"] > div,
+[data-testid="stChatInput"] form {
+    display: flex !important;
+    flex-flow: row-reverse nowrap !important;
+    background: #2f3440 !important;
+    border: 1px solid #4b5568 !important;
+    border-radius: 999px !important;
+    box-shadow: 0 8px 20px rgba(15, 35, 65, 0.18) !important;
+
+    min-height: 60px !important;
+    max-height: 60px !important;
+    padding: 8px 12px !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+    align-items: center !important;
+}
 
     [data-testid="stChatInput"] [data-baseweb="textarea"],
     [data-testid="stChatInput"] [data-baseweb="input"],
     [data-testid="stChatInput"] [data-baseweb="textarea"] > div,
     [data-testid="stChatInput"] [data-baseweb="input"] > div {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
         background: #2f3440 !important;
         border: none !important;
         box-shadow: none !important;
@@ -578,16 +890,34 @@ st.markdown(
         -webkit-tap-highlight-color: transparent;
     }
 
-    [data-testid="stChatInput"] textarea {
-        height: 36px !important;
-        min-height: 36px !important;
-        max-height: 36px !important;
-        overflow-y: auto !important;
-        resize: none !important;
-        line-height: 1.4 !important;
-        padding-top: 8px !important;
-        padding-bottom: 8px !important;
-    }
+[data-testid="stChatInput"] textarea {
+    height: auto !important;
+    min-height: 24px !important;
+    max-height: 140px !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    resize: none !important;
+
+    /* 🔥 KEY FIX */
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+
+    line-height: 1.4 !important;
+    padding: 6px 0 !important;
+}
+
+[data-testid="stChatInput"] {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+[data-testid="stChatInput"] > div,
+[data-testid="stChatInput"] form {
+    width: 100% !important;
+}
 
     [data-testid="stChatInput"] textarea:focus,
     [data-testid="stChatInput"] input:focus,
@@ -610,6 +940,17 @@ st.markdown(
     }
 
     [data-testid="stChatInput"] button {
+        position: static !important;
+        inset: auto !important;
+        transform: none !important;
+        align-self: center !important;
+        margin: 0 !important;
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         background: #f1f5fb !important;
         border: 1px solid #d0d9e6 !important;
         border-radius: 50% !important;
@@ -621,8 +962,97 @@ st.markdown(
         border-color: #bfcddd !important;
     }
 
+    [data-testid="stStatusWidget"],
+    section[data-testid="stStatusWidget"] {
+        background: #000000 !important;
+        border: 1px solid #2b2b2b !important;
+        border-radius: 10px !important;
+        margin: 2px 0 8px 0 !important;
+    }
+
+    [data-testid="stStatusWidget"] > div,
+    [data-testid="stStatusWidget"] > div > div,
+    [data-testid="stStatusWidget"] div[role="status"] {
+        background: #000000 !important;
+    }
+
+    [data-testid="stStatusWidget"] details,
+    [data-testid="stStatusWidget"] details:hover,
+    [data-testid="stStatusWidget"] details:focus-within,
+    [data-testid="stStatusWidget"] details[open],
+    [data-testid="stStatusWidget"] summary,
+    [data-testid="stStatusWidget"] summary:hover,
+    [data-testid="stStatusWidget"] summary:focus,
+    [data-testid="stStatusWidget"] summary:focus-visible,
+    [data-testid="stStatusWidget"] details[open] > summary {
+        background: #000000 !important;
+        border-radius: 10px !important;
+    }
+
+    [data-testid="stStatusWidget"] summary {
+        min-height: 36px !important;
+        padding: 6px 10px !important;
+        transition: none !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    [data-testid="stStatusWidget"] summary > div,
+    [data-testid="stStatusWidget"] details > div,
+    [data-testid="stStatusWidget"] [data-testid="stVerticalBlock"] {
+        background: #000000 !important;
+    }
+
+    /* Some Streamlit versions render status rows as expanders. Keep them black in all states. */
+    [data-testid="stExpander"],
+    [data-testid="stExpander"] details,
+    [data-testid="stExpander"] summary,
+    [data-testid="stExpander"] summary:hover,
+    [data-testid="stExpander"] summary:focus,
+    [data-testid="stExpander"] summary:focus-visible,
+    [data-testid="stExpander"] details[open] > summary,
+    [data-testid="stExpander"] summary > div,
+    [data-testid="stExpander"] summary > div > div {
+        background: #000000 !important;
+        color: #ffffff !important;
+        border-color: #2b2b2b !important;
+        box-shadow: none !important;
+    }
+
+    [data-testid="stExpander"] p,
+    [data-testid="stExpander"] span,
+    [data-testid="stExpander"] label {
+        color: #ffffff !important;
+    }
+
+    [data-testid="stExpander"] svg,
+    [data-testid="stExpander"] svg * {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+    }
+
     [data-testid="stStatusWidget"] [data-testid="stMarkdownContainer"] {
-        display: none !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+
+    [data-testid="stStatusWidget"] p,
+    [data-testid="stStatusWidget"] span {
+        color: #ffffff !important;
+    }
+
+    [data-testid="stStatusWidget"] svg,
+    [data-testid="stStatusWidget"] svg * {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+    }
+
+    .retrieved-context-title {
+        margin: 6px 0 6px 0;
+        color: #1f3550;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.2;
     }
 
     .page-footer {
@@ -665,9 +1095,9 @@ st.markdown(
         }
 
         [data-testid="stChatInput"] textarea {
-            height: 32px !important;
-            min-height: 32px !important;
-            max-height: 32px !important;
+                height: 20px !important;
+                min-height: 20px !important;
+                max-height: 20px !important;
         }
 
         .project-logo {
@@ -679,23 +1109,131 @@ st.markdown(
             margin-bottom: 8px;
         }
 
+        .about-team-btn {
+            position: static;
+            top: auto;
+            right: auto;
+            width: fit-content;
+            max-width: 100%;
+            margin: 0 0 8px 0;
+        }
+
+        .about-overlay {
+            padding: 12px;
+        }
+
+        .about-close {
+            top: 12px;
+            right: 12px;
+        }
+
+        .about-image-wrap img {
+            max-width: 94vw;
+            max-height: 82vh;
+        }
+
         .hero {
             padding: 14px 12px;
+        }
+
+        .about-card {
+            padding: 16px;
+            max-height: calc(100vh - 24px);
+            overflow-y: auto;
+        }
+
+        .about-layout,
+        .about-copy,
+        .about-visual {
+            max-height: none;
+            overflow: visible;
+            padding-right: 0;
+        }
+
+        .about-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .about-visual {
+            order: -1;
+        }
+
+        .about-copy {
+            order: 1;
+        }
+
+        .about-copy h2 {
+            font-size: 1.55rem;
+        }
+
+        .about-list {
+            gap: 8px;
+        }
+
+        .team-members {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .team-member-card {
+            padding: 12px;
+        }
+
+        .about-image-wrap {
+            min-height: 240px;
+            padding: 10px;
+        }
+
+        .about-image-wrap img {
+            max-width: 100%;
+            max-height: 42vh;
+        }
+
+        .about-team-name {
+            font-size: 1.08rem;
+        }
+
+        .about-team-subtitle {
+            font-size: 0.84rem;
         }
 
         .context-panel-body {
             max-height: 220px;
         }
 
+        .context-chip-row {
+            align-items: flex-start;
+        }
+
+        .context-chip-wrap {
+            display: block;
+            width: 100%;
+        }
+
+        .context-chip {
+            max-width: 100%;
+        }
+
         .context-tooltip {
-            left: 50%;
-            bottom: calc(100% + 8px);
-            transform: translate(-50%, 6px);
-            width: min(92vw, 560px);
+            position: static;
+            left: auto;
+            bottom: auto;
+            transform: none;
+            width: 100%;
+            margin-top: 8px;
+            opacity: 1;
+            visibility: visible;
+            transition: none;
+        }
+
+        .context-chip-wrap:not([open]) .context-tooltip {
+            display: none;
         }
 
         .context-chip-wrap[open] .context-tooltip {
-            transform: translate(-50%, 0);
+            transform: none;
         }
 
         .page-footer {
@@ -717,6 +1255,11 @@ st.markdown(
 # -------------------------------------------------
 st.sidebar.markdown(
     f"<h2 style='margin-top: 0;'><span class='sidebar-title'><img src='{LOGO_ICON_URL}' alt='doc icon'/>Documents</span></h2>",
+    unsafe_allow_html=True
+)
+
+st.sidebar.markdown(
+    "<hr style='border-color: rgba(255,255,255,0.2); margin: 12px 0;'>",
     unsafe_allow_html=True
 )
 
@@ -742,17 +1285,12 @@ if st.session_state.processing_notice:
 os.makedirs("models", exist_ok=True)
 _sync_documents_from_models()
 
-st.sidebar.markdown(
-    "<hr style='border-color: rgba(255,255,255,0.2); margin: 12px 0;'>",
-    unsafe_allow_html=True
-)
-
 if not st.session_state.documents:
     st.sidebar.info("📂 No documents yet. Upload one to begin.")
 else:
     st.sidebar.markdown(
         "<p style='color:#a0a0a0; font-size: 0.85rem; margin-bottom: 10px;'>Your Files</p>",
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
     for doc in st.session_state.documents:
         is_active = st.session_state.active_doc_id == doc["id"]
@@ -761,24 +1299,27 @@ else:
             button_label,
             key=f"doc_{doc['id']}",
             use_container_width=True,
-            type="primary" if is_active else "secondary"
+            type="primary" if is_active else "secondary",
         ):
             st.session_state.active_doc_id = doc["id"]
 
         st.sidebar.markdown(
             f"<div class='sidebar-doc-size'>{doc['size_kb']} KB</div>",
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
 st.markdown(
     f"""
     <div class='project-logo'><img src='{LOGO_ICON_URL}' alt='logo'/>AI Doc Chatbot</div>
+    <a class='about-team-btn' href='#about-team-overlay'>About Team</a>
     """,
     unsafe_allow_html=True,
 )
 
+active_doc = _get_doc_by_id(st.session_state.active_doc_id)
+
 st.markdown(
-    """
+    f"""
     <div class='hero'>
         <h1>Document Chat</h1>
         <p>Upload in the sidebar. We index automatically, then you can chat immediately.</p>
@@ -786,8 +1327,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-active_doc = _get_doc_by_id(st.session_state.active_doc_id)
 
 if not active_doc:
     st.markdown(
@@ -802,7 +1341,9 @@ if not active_doc:
     st.chat_input("Upload a document first to start chatting", disabled=True)
 else:
     st.markdown(
-        f"<div class='doc-card'><strong>Active Document:</strong> {active_doc['name']}</div>",
+        f"""
+        <div class='doc-card'><strong>Active Document:</strong> {active_doc['name']}</div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -820,7 +1361,7 @@ else:
     for msg_idx, msg in enumerate(history):
         with st.chat_message(msg["role"]):
             if msg["role"] == "assistant" and msg.get("contexts"):
-                st.markdown("###  Retrieved Context")
+                st.markdown("<div class='retrieved-context-title'>Retrieved Context</div>", unsafe_allow_html=True)
                 _render_retrieved_context(
                     msg["contexts"],
                     key_prefix=f"history_{active_doc['id']}_{msg_idx}",
@@ -852,11 +1393,14 @@ else:
             context_chunks = df.iloc[top_idx]["text"].tolist()
 
             # Show retrieved context first, then generate answer (same as previous UI behavior).
-            st.markdown("###  Retrieved Context")
+            progress.update(label="Retrieving relevant context", state="running", expanded=False)
+            st.markdown("<div class='retrieved-context-title'>Retrieved Context</div>", unsafe_allow_html=True)
             _render_retrieved_context(
                 context_chunks,
                 key_prefix=f"live_{active_doc['id']}_{len(history)}",
             )
+
+            progress.update(label="Generating answer", state="running", expanded=False)
 
             combined_context = "\n\n".join(
                 [f"Context {i + 1}:\n{chunk}" for i, chunk in enumerate(context_chunks)]
@@ -953,6 +1497,72 @@ Structured Answer:
         st.rerun()
 
 st.markdown(
-    "<div class='page-footer'>Develop with 💖 by <strong>Team Sprint Savants</strong></div>",
+    "<div id='team-info' class='page-footer'>Develop with 💖 by <strong>Team Sprint Savants</strong></div>",
     unsafe_allow_html=True,
 )
+
+# -------------------------------------------------
+# About Team Section
+# -------------------------------------------------
+TEAM_IMAGE_URL = "assets/team-group.png"
+
+
+def _render_about_team_section():
+    image_src = TEAM_IMAGE_URL
+    if os.path.exists(TEAM_IMAGE_URL):
+        with open(TEAM_IMAGE_URL, "rb") as image_file:
+            encoded = base64.b64encode(image_file.read()).decode("utf-8")
+        image_src = f"data:image/png;base64,{encoded}"
+
+    image_block = f"<img src='{image_src}' alt='Team Sprint Savants'/>"
+
+    st.markdown(
+        f"""
+        <section id='about-team-overlay' class='about-overlay'>
+            <div class='about-card'>
+                <a class='about-close' href='#' aria-label='Close about section'>✕</a>
+                <div class='about-layout'>
+                    <div class='about-copy'>
+                        <div class='about-eyebrow'>Who built this</div>
+                        <h2>Team Sprint Savants</h2>
+                        <div class='about-list'>
+                            <div class='team-members'>
+                                <div class='team-member-card'>
+                                    <span class='team-member-role'>Leader</span>
+                                    <span class='team-member-name'>Jatin Chutani</span>
+                                    <span class='team-member-desc'>Coordinated the team, handled presentation flow, and organized the final PPT and poster delivery.</span>
+                                </div>
+                                <div class='team-member-card'>
+                                    <span class='team-member-role'>UI / UX</span>
+                                    <span class='team-member-name'>Manish Jangir</span>
+                                    <span class='team-member-desc'>Designed the interface look, refined layout spacing, and improved the chatbot interaction feel.</span>
+                                </div>
+                                <div class='team-member-card'>
+                                    <span class='team-member-role'>Research Support</span>
+                                    <span class='team-member-name'>Asha Kanwer</span>
+                                    <span class='team-member-desc'>Supported web scraping work and helped prepare the presentation and poster materials.</span>
+                                </div>
+                                <div class='team-member-card'>
+                                    <span class='team-member-role'>Core Development</span>
+                                    <span class='team-member-name'>Chirag Agarwal</span>
+                                    <span class='team-member-desc'>Built the main backend flow, model integration, and core chatbot functionality end to end.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='about-visual'>
+                        <div class='about-image-wrap'>
+                            {image_block}
+                        </div>
+                        <div class='about-team-name'>Team Sprint Savants</div>
+                        <div class='about-team-subtitle'>A collaborative effort focused on practical AI, clean interface design, and clear project communication from development to presentation.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+_render_about_team_section()
