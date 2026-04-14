@@ -324,14 +324,17 @@ st.markdown(
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 8px 14px;
-        border-radius: 999px;
-        background: #13263d;
-        color: #f4f8ff !important;
-        border: 1px solid #3f5977;
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        padding: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        color: #13263d !important;
+        border: 1px solid #cfd8e6;
         font-family: 'Space Grotesk', sans-serif;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0;
         text-decoration: none !important;
         position: fixed;
         top: 82px;
@@ -341,22 +344,40 @@ st.markdown(
         transition: transform 0.15s ease, background 0.2s ease;
     }
 
+    .about-btn-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .about-team-btn .about-btn-text {
+        display: none;
+    }
+
     .about-team-btn:hover {
-        background: #1c3655;
+        background: #f4f8ff;
+        border-color: #bfcde0;
         transform: translateY(-1px);
     }
 
     .about-overlay {
         position: fixed;
         inset: 0;
-        z-index: 20000;
+        z-index: 2147483000;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
-        padding: 20px;
+        padding: clamp(10px, 3vh, 24px);
         background: rgba(8, 15, 28, 0.56);
         backdrop-filter: blur(12px) saturate(118%);
         -webkit-backdrop-filter: blur(12px) saturate(118%);
+        overflow-y: auto;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -372,13 +393,15 @@ st.markdown(
     .about-card {
         position: relative;
         width: 100%;
+        max-width: 1240px;
         border: none;
         background: transparent;
         box-shadow: none;
         border-radius: 28px;
-        padding: 20px;
-        max-height: calc(100vh - 56px);
-        overflow: hidden;
+        padding: clamp(12px, 2vw, 20px);
+        max-height: none;
+        overflow: visible;
+        margin: auto;
         transform: translateY(18px) scale(0.985);
         transition: transform 0.3s ease;
     }
@@ -411,14 +434,14 @@ st.markdown(
         grid-template-columns: 1.05fr 0.95fr;
         gap: 20px;
         align-items: stretch;
-        max-height: calc(100vh - 96px);
+        max-height: none;
     }
 
     .about-copy {
         padding: 12px 6px 12px 4px;
         color: #e8eef8;
-        overflow-y: auto;
-        max-height: calc(100vh - 120px);
+        overflow: visible;
+        max-height: none;
         padding-right: 10px;
     }
 
@@ -439,8 +462,8 @@ st.markdown(
     }
 
     .about-visual {
-        overflow-y: auto;
-        max-height: calc(100vh - 120px);
+        overflow: visible;
+        max-height: none;
         padding-right: 6px;
     }
 
@@ -592,10 +615,29 @@ st.markdown(
     .about-image-wrap img {
         width: 100%;
         max-width: 100%;
-        max-height: 70vh;
+        max-height: min(70vh, 620px);
         object-fit: contain;
         display: block;
         filter: drop-shadow(0px -10px 19px orange);
+    }
+
+    @media (max-width: 1100px) {
+        .about-layout {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .about-visual {
+            order: -1;
+        }
+
+        .about-image-wrap {
+            min-height: 260px;
+        }
+
+        .about-image-wrap img {
+            max-height: 48vh;
+        }
     }
 
     .about-image-fallback {
@@ -854,15 +896,14 @@ st.markdown(
 [data-testid="stChatInput"] > div,
 [data-testid="stChatInput"] form {
     display: flex !important;
-    flex-flow: row-reverse nowrap !important;
+    flex-flow: row nowrap !important;
     background: #2f3440 !important;
     border: 1px solid #4b5568 !important;
-    border-radius: 999px !important;
+    border-radius: 18px !important;
     box-shadow: 0 8px 20px rgba(15, 35, 65, 0.18) !important;
-
-    min-height: 60px !important;
-    max-height: 60px !important;
-    padding: 8px 12px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    padding: 8px 10px !important;
     gap: 8px !important;
     overflow: hidden !important;
     align-items: center !important;
@@ -874,39 +915,37 @@ st.markdown(
     [data-testid="stChatInput"] [data-baseweb="input"] > div {
         flex: 1 1 auto !important;
         min-width: 0 !important;
-        background: #2f3440 !important;
+        background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         outline: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     [data-testid="stChatInput"] textarea,
     [data-testid="stChatInput"] input {
-        background: #2f3440 !important;
+        background: transparent !important;
         border: none !important;
         color: #f1f5fb !important;
         outline: none !important;
         box-shadow: none !important;
         -webkit-tap-highlight-color: transparent;
+        font-size: 0.97rem !important;
     }
 
 [data-testid="stChatInput"] textarea {
-    height: auto !important;
-    min-height: 24px !important;
-    max-height: 140px !important;
-
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
-
     resize: none !important;
-
-    /* 🔥 KEY FIX */
     white-space: pre-wrap !important;
     word-break: break-word !important;
     overflow-wrap: break-word !important;
-
-    line-height: 1.4 !important;
-    padding: 6px 0 !important;
+    line-height: 1.45 !important;
+    padding: 7px 4px 6px !important;
 }
 
 [data-testid="stChatInput"] {
@@ -945,9 +984,9 @@ st.markdown(
         transform: none !important;
         align-self: center !important;
         margin: 0 !important;
-        width: 36px !important;
-        height: 36px !important;
-        min-width: 36px !important;
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -1086,40 +1125,71 @@ st.markdown(
         [data-testid="block-container"] {
             padding-left: 0.85rem;
             padding-right: 0.85rem;
+            padding-top: 5.4rem;
+            padding-bottom: 7.5rem;
         }
 
         [data-testid="stChatInput"] > div,
         [data-testid="stChatInput"] form {
-            min-height: 56px !important;
-            max-height: 56px !important;
+            min-height: 50px !important;
+            max-height: 50px !important;
         }
 
         [data-testid="stChatInput"] textarea {
-                height: 20px !important;
-                min-height: 20px !important;
-                max-height: 20px !important;
+                height: 34px !important;
+                min-height: 34px !important;
+                max-height: 34px !important;
+                padding-top: 6px !important;
+                padding-bottom: 6px !important;
         }
 
         .project-logo {
-            position: static;
-            left: auto;
-            top: auto;
+            position: fixed;
+            top: 82px;
+            left: 12px;
             width: fit-content;
-            max-width: 100%;
-            margin-bottom: 8px;
+            max-width: calc(100vw - 72px);
+            margin: 0;
+            z-index: 9998;
         }
 
         .about-team-btn {
-            position: static;
-            top: auto;
-            right: auto;
-            width: fit-content;
-            max-width: 100%;
-            margin: 0 0 8px 0;
+            position: fixed;
+            top: 82px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            padding: 0;
+            border-radius: 50%;
+            margin: 0;
+            z-index: 9998;
+            font-size: 0;
+            background: rgba(255, 255, 255, 0.9);
+            color: #13263d !important;
+            border: 1px solid #cfd8e6;
+            box-shadow: 0 10px 24px rgba(12, 23, 40, 0.2), 0 2px 6px rgba(12, 23, 40, 0.16);
+        }
+
+        .about-team-btn:hover {
+            background: #f4f8ff;
+            border-color: #bfcde0;
+            transform: translateY(-1px);
+        }
+
+        .about-team-btn .about-btn-text {
+            display: none;
+        }
+
+        .about-team-btn .about-btn-icon {
+            display: inline-flex;
+            color: #13263d;
+            font-size: 0.95rem;
+            font-weight: 700;
         }
 
         .about-overlay {
-            padding: 12px;
+            padding: 8px;
         }
 
         .about-close {
@@ -1137,9 +1207,10 @@ st.markdown(
         }
 
         .about-card {
-            padding: 16px;
-            max-height: calc(100vh - 24px);
-            overflow-y: auto;
+            padding: 12px;
+            min-height: auto;
+            max-height: none;
+            overflow: visible;
         }
 
         .about-layout,
@@ -1237,12 +1308,18 @@ st.markdown(
         }
 
         .page-footer {
-            position: static;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 110px;
             width: 100%;
             white-space: normal;
             text-align: center;
             line-height: 1.3;
-            padding: 6px 10px 10px;
+            padding: 4px 10px;
+            z-index: 9998;
+            font-size: 0.72rem;
+            pointer-events: none;
         }
     }
     </style>
@@ -1311,7 +1388,10 @@ else:
 st.markdown(
     f"""
     <div class='project-logo'><img src='{LOGO_ICON_URL}' alt='logo'/>AI Doc Chatbot</div>
-    <a class='about-team-btn' href='#about-team-overlay'>About Team</a>
+    <a class='about-team-btn' href='#about-team-overlay' aria-label='About Team'>
+        <span class='about-btn-text'>About Team</span>
+        <span class='about-btn-icon' aria-hidden='true'>i</span>
+    </a>
     """,
     unsafe_allow_html=True,
 )
