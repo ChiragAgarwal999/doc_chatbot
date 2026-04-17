@@ -896,17 +896,18 @@ st.markdown(
 [data-testid="stChatInput"] > div,
 [data-testid="stChatInput"] form {
     display: flex !important;
-    flex-flow: row nowrap !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     background: #2f3440 !important;
     border: 1px solid #4b5568 !important;
     border-radius: 18px !important;
     box-shadow: 0 8px 20px rgba(15, 35, 65, 0.18) !important;
     min-height: 52px !important;
-    max-height: 52px !important;
+    max-height: 160px !important;
     padding: 8px 10px !important;
     gap: 8px !important;
     overflow: hidden !important;
-    align-items: center !important;
+    align-items: flex-end !important;
 }
 
     [data-testid="stChatInput"] [data-baseweb="textarea"],
@@ -935,9 +936,9 @@ st.markdown(
     }
 
 [data-testid="stChatInput"] textarea {
-    height: 36px !important;
+    height: auto !important;
     min-height: 36px !important;
-    max-height: 36px !important;
+    max-height: 128px !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     resize: none !important;
@@ -946,6 +947,7 @@ st.markdown(
     overflow-wrap: break-word !important;
     line-height: 1.45 !important;
     padding: 7px 4px 6px !important;
+    overflow-wrap: anywhere !important;
 }
 
 [data-testid="stChatInput"] {
@@ -956,6 +958,12 @@ st.markdown(
 [data-testid="stChatInput"] > div,
 [data-testid="stChatInput"] form {
     width: 100% !important;
+}
+
+[data-testid="stChatInput"] form > div:first-child,
+[data-testid="stChatInput"] > div > div:first-child {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
 }
 
     [data-testid="stChatInput"] textarea:focus,
@@ -982,7 +990,8 @@ st.markdown(
         position: static !important;
         inset: auto !important;
         transform: none !important;
-        align-self: center !important;
+        align-self: flex-end !important;
+        flex: 0 0 auto !important;
         margin: 0 !important;
         width: 34px !important;
         height: 34px !important;
@@ -1131,16 +1140,21 @@ st.markdown(
 
         [data-testid="stChatInput"] > div,
         [data-testid="stChatInput"] form {
-            min-height: 50px !important;
-            max-height: 50px !important;
+            min-height: 56px !important;
+            max-height: 168px !important;
+            padding: 8px 9px 9px !important;
+            border-radius: 16px !important;
         }
 
         [data-testid="stChatInput"] textarea {
-                height: 34px !important;
-                min-height: 34px !important;
-                max-height: 34px !important;
+                height: auto !important;
+                min-height: 38px !important;
+                max-height: 124px !important;
                 padding-top: 6px !important;
                 padding-bottom: 6px !important;
+                font-size: 0.92rem !important;
+                line-height: 1.4 !important;
+                padding-right: 6px !important;
         }
 
         .project-logo {
@@ -1308,18 +1322,7 @@ st.markdown(
         }
 
         .page-footer {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 110px;
-            width: 100%;
-            white-space: normal;
-            text-align: center;
-            line-height: 1.3;
-            padding: 4px 10px;
-            z-index: 9998;
-            font-size: 0.72rem;
-            pointer-events: none;
+            display: none;
         }
     }
     </style>
