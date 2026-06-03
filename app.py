@@ -1471,7 +1471,7 @@ else:
                 [question_embedding]
             ).flatten()
 
-            top_k = 5
+            top_k = 10
             top_idx = similarities.argsort()[::-1][:top_k]
             context_chunks = df.iloc[top_idx]["text"].tolist()
 
